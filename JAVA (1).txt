@@ -1,0 +1,41 @@
+const apiKey = 'YOUR_API_KEY'; // Replace with your actual API key
+const searchBtn = document.getElementById('searchBtn');
+const locationInput = document.getElementById('locationInput');
+const cityName = document.getElementById('cityName');
+const weatherDescription = document.getElementById('weatherDescription');
+const temperature = document.getElementById('temperature');
+const humidity = document.getElementById('humidity');
+const windSpeed = document.getElementById('windSpeed');
+
+// Fetch weather data based on location
+async function fetchWeather(location) {
+  try {
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${apiKey}`
+    );
+    if (!response.ok) throw new Error('Location not found');
+    const data = await response.json();
+    updateWeatherDetails(data);
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+// Update the DOM with fetched weather data
+function updateWeatherDetails(data) {
+  cityName.textContent = data.name;
+  weatherDescription.textContent = data.weather[0].description;
+  temperature.textContent = data.main.temp.toFixed(1);
+  humidity.textContent = data.main.humidity;
+  windSpeed.textContent = data.wind.speed;
+}
+
+// Event listener for search button
+searchBtn.addEventListener('click', () => {
+  const location = locationInput.value.trim();
+  if (location) {
+    fetchWeather(location);
+  } else {
+    alert('Please enter a location');
+  }
+});
